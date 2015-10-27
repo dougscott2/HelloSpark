@@ -13,7 +13,6 @@ public class Main {
     public static void main(String[] args) {
 	// write your code here
         HashMap<String, User> users = new HashMap();
-        Spark.staticFileLocation("/public");
         Spark.init(); //to win it
         Spark.post(
                 "/create-account",
@@ -34,20 +33,26 @@ public class Main {
                         return "";
                 })
         );//end post
+
         Spark.get(
-                "/accounts",
+                "/",
                 ((request, response) -> {
+                    Session session = request.session();
+                    String name = session.attribute("username");
+                    if (name != null){
+                        HashMap m = new HashMap();
+                        m.put("count", users.size());
+                        m.put("accounts", users.values());
+                        return new ModelAndView(m, "logged-in.html");
+                    }
                     HashMap m = new HashMap();
-                    m.put("count", users.size());
-                    m.put("accounts", users.values());
-                    return new ModelAndView(m, "accounts.html");
+                    return new ModelAndView(m, "not-logged-in.html");
+
                 }),
+
                 new MustacheTemplateEngine()
+
         );
-
-
-
-
 
 
 
