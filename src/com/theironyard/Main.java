@@ -33,7 +33,6 @@ public class Main {
                         return "";
                 })
         );//end post
-
         Spark.get(
                 "/",
                 ((request, response) -> {
@@ -49,9 +48,16 @@ public class Main {
                     return new ModelAndView(m, "not-logged-in.html");
 
                 }),
-
                 new MustacheTemplateEngine()
-
+        );
+        Spark.post(
+                "/logout",
+                (request, response) -> {
+                    Session session = request.session();
+                    session.invalidate();
+                    response.redirect("/");
+                    return "";
+                }
         );
 
 
